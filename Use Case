@@ -1,0 +1,47 @@
+import random
+
+def winning_strategy():
+    deck = list(range(1, 11))  # Cards 1 to 10
+    strategy = {}
+
+    for player_card in deck:
+        hold_wins = 0
+        swap_wins = 0
+        simulations = 10000  # Monte Carlo simulation
+
+        for _ in range(simulations):
+            # Random opponent card
+            opponent_card = random.choice(deck)
+
+            # ---- HOLD STRATEGY ----
+            if player_card > opponent_card:
+                hold_wins += 1
+
+            # ---- SWAP STRATEGY ----
+            remaining_cards = [c for c in deck if c != player_card]
+            new_card = random.choice(remaining_cards)
+            if new_card > opponent_card:
+                swap_wins += 1
+
+        # Calculate winning probabilities
+        hold_prob = hold_wins / simulations
+        swap_prob = swap_wins / simulations
+
+        # Choose better option
+        if hold_prob >= swap_prob:
+            strategy[player_card] = ("HOLD", round(hold_prob, 2))
+        else:
+            strategy[player_card] = ("SWAP", round(swap_prob, 2))
+
+    return strategy
+
+
+# ---- MAIN PROGRAM ----
+if _name_ == "_main_":
+    print("Finding the Winning Strategy in a Card Game...\n")
+    best_strategy = winning_strategy()
+
+    print("Card\tBest Move\tWinning Probability")
+    print("-------------------------------------------")
+    for card, (move, prob) in best_strategy.items():
+        print(f"{card}\t{move}\t\t{prob}")
